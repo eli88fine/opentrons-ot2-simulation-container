@@ -63,6 +63,15 @@ RUN apk add --no-cache --virtual .build-deps \
     && apk del .build-deps 
 
 
+# perform an initial 'import opentrons' statement to allow the container definitions to build themselves (robotSettings.json and config.json)
+RUN echo $'import opentrons' > /tmp/initial_import.py \
+    && python /tmp/initial_import.py \
+    && rm /tmp/initial_import.py
+
+
+# Because repository names can sometimes conflict with root directory names (i.e. 'media'), create a 'source' subdirectory and clone all code into that
+RUN mkdir source
+WORKDIR source
 
 #RUN cd opentrons/api \
 #    && make local-shell \    
@@ -79,9 +88,7 @@ RUN apk add --no-cache --virtual .build-deps \
 #    && apk del .build-deps    
 
 
-# Because repository names can sometimes conflict with root directory names (i.e. 'media'), create a 'source' subdirectory and clone all code into that
-#RUN mkdir source
-#WORKDIR source
+
 
 
 
